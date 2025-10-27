@@ -1,33 +1,46 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('hero');
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string>('');
+  const [cart, setCart] = useState<{[key: string]: number}>({});
+  const [customerName, setCustomerName] = useState('');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerAddress, setCustomerAddress] = useState('');
 
   const menuItems = [
     {
       name: 'Императорская',
-      price: '2 500 ₽',
+      price: 2500,
+      priceText: '2 500 ₽',
       description: 'Мраморная говядина, трюфельный соус, фуа-гра, золотая фольга',
       weight: '450г'
     },
     {
       name: 'Царская',
-      price: '1 800 ₽',
+      price: 1800,
+      priceText: '1 800 ₽',
       description: 'Премиальная баранина, соус из белых грибов, пармезан',
       weight: '400г'
     },
     {
       name: 'Королевская',
-      price: '1 500 ₽',
+      price: 1500,
+      priceText: '1 500 ₽',
       description: 'Филе индейки, крем-сыр с трюфелем, руккола, вяленые томаты',
       weight: '380г'
     },
     {
       name: 'Люкс',
-      price: '1 200 ₽',
+      price: 1200,
+      priceText: '1 200 ₽',
       description: 'Телятина, соус бешамель с шафраном, микс салатов',
       weight: '350г'
     }
@@ -58,6 +71,47 @@ const Index = () => {
     setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const addToCart = (itemName: string) => {
+    setCart(prev => ({
+      ...prev,
+      [itemName]: (prev[itemName] || 0) + 1
+    }));
+  };
+
+  const removeFromCart = (itemName: string) => {
+    setCart(prev => {
+      const newCart = { ...prev };
+      if (newCart[itemName] > 1) {
+        newCart[itemName]--;
+      } else {
+        delete newCart[itemName];
+      }
+      return newCart;
+    });
+  };
+
+  const getTotalPrice = () => {
+    return Object.entries(cart).reduce((total, [itemName, quantity]) => {
+      const item = menuItems.find(i => i.name === itemName);
+      return total + (item?.price || 0) * quantity;
+    }, 0);
+  };
+
+  const handleOrderClick = (itemName: string) => {
+    setSelectedItem(itemName);
+    addToCart(itemName);
+    setIsOrderDialogOpen(true);
+  };
+
+  const handleSubmitOrder = () => {
+    alert(`Заказ оформлен!\n\nИмя: ${customerName}\nТелефон: ${customerPhone}\nАдрес: ${customerAddress}\n\nИтого: ${getTotalPrice().toLocaleString('ru-RU')} ₽`);
+    setCart({});
+    setCustomerName('');
+    setCustomerPhone('');
+    setCustomerAddress('');
+    setIsOrderDialogOpen(false);
   };
 
   return (
@@ -169,12 +223,15 @@ const Index = () => {
                 <CardContent className="p-8">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-3xl font-serif text-secondary">{item.name}</h3>
-                    <span className="text-2xl font-bold text-primary">{item.price}</span>
+                    <span className="text-2xl font-bold text-primary">{item.priceText}</span>
                   </div>
                   <p className="text-muted-foreground mb-4 leading-relaxed">{item.description}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">{item.weight}</span>
-                    <Button className="bg-primary text-secondary hover:bg-primary/90">
+                    <Button 
+                      className="bg-primary text-secondary hover:bg-primary/90"
+                      onClick={() => handleOrderClick(item.name)}
+                    >
                       Заказать
                     </Button>
                   </div>
@@ -356,6 +413,107 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
+        <DialogContent className="sm:max-w-[500px] bg-background border-primary/30">
+          <DialogHeader>
+            <DialogTitle className="text-3xl font-serif text-secondary">Оформление заказа</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 py-4">
+            <div className="space-y-4">
+              <h3 className="text-xl font-serif text-secondary">Ваш заказ:</h3>
+              {Object.entries(cart).map(([itemName, quantity]) => {
+                const item = menuItems.find(i => i.name === itemName);
+                return (
+                  <div key={itemName} className="flex items-center justify-between p-4 bg-secondary/20 rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-semibold text-secondary">{itemName}</p>
+                      <p className="text-sm text-muted-foreground">{item?.priceText} × {quantity}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => removeFromCart(itemName)}
+                        className="h-8 w-8 p-0 border-primary/30"
+                      >
+                        <Icon name="Minus" size={16} />
+                      </Button>
+                      <span className="text-lg font-semibold text-secondary w-6 text-center">{quantity}</span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => addToCart(itemName)}
+                        className="h-8 w-8 p-0 border-primary/30"
+                      >
+                        <Icon name="Plus" size={16} />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+              
+              <div className="pt-4 border-t border-primary/20">
+                <div className="flex justify-between items-center">
+                  <span className="text-xl font-serif text-secondary">Итого:</span>
+                  <span className="text-2xl font-bold text-primary">{getTotalPrice().toLocaleString('ru-RU')} ₽</span>
+                </div>
+                {getTotalPrice() >= 1000 && (
+                  <p className="text-sm text-primary/70 mt-2">✨ Бесплатная доставка!</p>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-primary/20">
+              <h3 className="text-xl font-serif text-secondary">Контактные данные:</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-secondary">Имя</Label>
+                <Input
+                  id="name"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="Ваше имя"
+                  className="border-primary/30"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-secondary">Телефон</Label>
+                <Input
+                  id="phone"
+                  value={customerPhone}
+                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  placeholder="+7 (___) ___-__-__"
+                  className="border-primary/30"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-secondary">Адрес доставки</Label>
+                <Input
+                  id="address"
+                  value={customerAddress}
+                  onChange={(e) => setCustomerAddress(e.target.value)}
+                  placeholder="Улица, дом, квартира"
+                  className="border-primary/30"
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              onClick={handleSubmitOrder}
+              disabled={!customerName || !customerPhone || !customerAddress || Object.keys(cart).length === 0}
+              className="w-full bg-primary text-secondary hover:bg-primary/90 text-lg py-6"
+            >
+              Оформить заказ на {getTotalPrice().toLocaleString('ru-RU')} ₽
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
