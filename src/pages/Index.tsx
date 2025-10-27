@@ -215,9 +215,8 @@ const Index = () => {
         <div className="container mx-auto text-center relative z-10">
           <div className="animate-fade-in">
             <h2 className="text-6xl md:text-8xl font-serif text-secondary mb-6 leading-tight">
-              Самая дорогая<br />
-              <span className="text-primary">шаурма</span><br />
-              в Ростове
+              <span className="text-primary">Царская</span><br />
+              шаурма
             </h2>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Авторская кухня высшего уровня в формате уличной еды
