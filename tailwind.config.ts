@@ -61,6 +61,12 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				khokhloma: {
+					black: '#1a1a1a',
+					red: '#c51b1b',
+					gold: '#daa520',
+					darkRed: '#8b1818'
 				}
 			},
 			borderRadius: {
@@ -69,8 +75,11 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['Montserrat', 'sans-serif'],
-				serif: ['Cormorant Garamond', 'serif'],
+				sans: ['Philosopher', 'sans-serif'],
+				serif: ['Playfair Display', 'serif'],
+			},
+			backgroundImage: {
+				'khokhloma-pattern': 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M30 5 Q35 15, 30 25 Q25 15, 30 5 M15 20 Q20 30, 15 40 Q10 30, 15 20 M45 20 Q50 30, 45 40 Q40 30, 45 20\' stroke=\'%23daa520\' stroke-width=\'1\' fill=\'none\' opacity=\'0.3\'/%3E%3C/svg%3E")',
 			},
 			keyframes: {
 				'accordion-down': {
