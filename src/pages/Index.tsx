@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
@@ -9,6 +10,7 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [activeSection, setActiveSection] = useState('hero');
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string>('');
   const [cart, setCart] = useState<{[key: string]: number}>({});
   const [customerName, setCustomerName] = useState('');
@@ -21,30 +23,62 @@ const Index = () => {
       price: 2500,
       priceText: '2 500 ₽',
       description: 'Мраморная говядина, трюфельный соус, фуа-гра, золотая фольга',
-      weight: '450г'
+      weight: '450г',
+      category: 'shawarma'
     },
     {
       name: 'Царская',
       price: 1800,
       priceText: '1 800 ₽',
       description: 'Премиальная баранина, соус из белых грибов, пармезан',
-      weight: '400г'
+      weight: '400г',
+      category: 'shawarma'
     },
     {
       name: 'Королевская',
       price: 1500,
       priceText: '1 500 ₽',
       description: 'Филе индейки, крем-сыр с трюфелем, руккола, вяленые томаты',
-      weight: '380г'
+      weight: '380г',
+      category: 'shawarma'
     },
     {
       name: 'Люкс',
       price: 1200,
       priceText: '1 200 ₽',
       description: 'Телятина, соус бешамель с шафраном, микс салатов',
-      weight: '350г'
+      weight: '350г',
+      category: 'shawarma'
     }
   ];
+
+  const saladItems = [
+    { name: 'Оливье', price: 350, priceText: '350 ₽', description: 'Классический салат с отварными овощами, яйцами и майонезом', weight: '250г' },
+    { name: 'Салат Конструктор', price: 420, priceText: '420 ₽', description: 'Создай свой идеальный салат из наших ингредиентов', weight: '300г' },
+    { name: 'Свекла с сыром и чесноком', price: 280, priceText: '280 ₽', description: 'Свежая свекла, сыр, чеснок, майонез', weight: '200г' },
+    { name: 'Салат с ветчиной', price: 380, priceText: '380 ₽', description: 'Ветчина, свежие овощи, зелень, соус', weight: '250г' },
+    { name: 'Цезарь', price: 450, priceText: '450 ₽', description: 'Куриное филе, салат романо, пармезан, соус цезарь, сухарики', weight: '280г' },
+    { name: 'Крабовый салат', price: 320, priceText: '320 ₽', description: 'Крабовые палочки, кукуруза, яйца, рис, майонез', weight: '250г' },
+    { name: 'Селедка под шубой', price: 340, priceText: '340 ₽', description: 'Сельдь, свекла, картофель, морковь, яйца, майонез', weight: '250г' },
+    { name: 'Куриный с ананасами', price: 360, priceText: '360 ₽', description: 'Куриное филе, ананасы, кукуруза, сыр, майонез', weight: '250г' },
+    { name: 'Салат из помидоров', price: 250, priceText: '250 ₽', description: 'Свежие помидоры, лук, зелень, масло', weight: '200г' },
+    { name: 'Овощной', price: 280, priceText: '280 ₽', description: 'Микс свежих овощей, зелень, масло', weight: '250г' },
+    { name: 'С курицей', price: 390, priceText: '390 ₽', description: 'Куриное филе, овощи, сыр, соус', weight: '280г' },
+    { name: 'Витаминный', price: 320, priceText: '320 ₽', description: 'Капуста, морковь, яблоко, клюква', weight: '250г' },
+    { name: 'Греческий', price: 420, priceText: '420 ₽', description: 'Фета, оливки, огурцы, помидоры, перец, масло', weight: '280г' },
+    { name: 'Винегрет', price: 260, priceText: '260 ₽', description: 'Свекла, картофель, морковь, огурцы, горошек', weight: '250г' },
+    { name: 'Овощной Светофор', price: 300, priceText: '300 ₽', description: 'Помидоры, огурцы, перец трех цветов, лук', weight: '250г' },
+    { name: 'Селедочка по-домашнему', price: 350, priceText: '350 ₽', description: 'Сельдь, лук, масло, специи', weight: '200г' },
+    { name: 'Капуста по-корейски', price: 220, priceText: '220 ₽', description: 'Капуста, морковь, специи, уксус', weight: '200г' },
+    { name: 'Морковь по-корейски', price: 220, priceText: '220 ₽', description: 'Морковь, специи, чеснок, масло', weight: '200г' },
+    { name: 'Баклажаны по-корейски', price: 280, priceText: '280 ₽', description: 'Баклажаны, морковь, специи, соус', weight: '200г' },
+    { name: 'Огурцы по-корейски', price: 240, priceText: '240 ₽', description: 'Огурцы, морковь, специи, чеснок', weight: '200г' },
+    { name: 'Спаржа по-корейски', price: 300, priceText: '300 ₽', description: 'Соевая спаржа, морковь, специи', weight: '200г' },
+    { name: 'Свекла по-корейски', price: 240, priceText: '240 ₽', description: 'Свекла, морковь, чеснок, специи', weight: '200г' },
+    { name: 'Папоротник по-корейски', price: 320, priceText: '320 ₽', description: 'Папоротник, морковь, лук, специи', weight: '200г' }
+  ];
+
+  const allMenuItems = [...menuItems, ...saladItems];
 
   const reviews = [
     {
@@ -69,6 +103,7 @@ const Index = () => {
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
+    setIsMobileMenuOpen(false);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -94,7 +129,7 @@ const Index = () => {
 
   const getTotalPrice = () => {
     return Object.entries(cart).reduce((total, [itemName, quantity]) => {
-      const item = menuItems.find(i => i.name === itemName);
+      const item = allMenuItems.find(i => i.name === itemName);
       return total + (item?.price || 0) * quantity;
     }, 0);
   };
@@ -123,7 +158,7 @@ const Index = () => {
             <h1 className="text-2xl md:text-3xl font-serif text-primary">Царская Шаурма</h1>
           </div>
           <div className="hidden md:flex gap-6">
-            {['Главная', 'Меню', 'О нас', 'Доставка', 'Отзывы'].map((item) => (
+            {['Главная', 'Меню', 'Салаты', 'О нас', 'Доставка', 'Отзывы'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item.toLowerCase())}
@@ -133,12 +168,42 @@ const Index = () => {
               </button>
             ))}
           </div>
-          <Button 
-            className="bg-primary text-secondary hover:bg-primary/90"
-            onClick={() => scrollToSection('меню')}
-          >
-            Заказать
-          </Button>
+          
+          <div className="flex items-center gap-2">
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild className="md:hidden">
+                <Button variant="outline" size="icon" className="border-primary/30 text-primary">
+                  <Icon name="Menu" size={24} />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="bg-secondary border-l border-primary/20 w-80">
+                <SheetHeader>
+                  <SheetTitle className="text-2xl font-serif text-primary flex items-center gap-2">
+                    <span className="text-3xl">👑</span>
+                    Меню
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="mt-8 space-y-4">
+                  {['Главная', 'Меню', 'Салаты', 'О нас', 'Доставка', 'Отзывы'].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => scrollToSection(item.toLowerCase())}
+                      className="w-full text-left text-lg text-primary hover:text-primary/80 transition-colors font-medium py-3 border-b border-primary/10"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+            
+            <Button 
+              className="bg-primary text-secondary hover:bg-primary/90 hidden md:block"
+              onClick={() => scrollToSection('меню')}
+            >
+              Заказать
+            </Button>
+          </div>
         </div>
       </nav>
 
@@ -229,6 +294,41 @@ const Index = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground">{item.weight}</span>
                     <Button 
+                      className="bg-primary text-secondary hover:bg-primary/90"
+                      onClick={() => handleOrderClick(item.name)}
+                    >
+                      Заказать
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="салаты" className="py-20 px-4 bg-background">
+        <div className="container mx-auto">
+          <h2 className="text-5xl md:text-6xl font-serif text-secondary text-center mb-4">Салаты</h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">Свежие салаты и закуски по-корейски</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {saladItems.map((item, index) => (
+              <Card 
+                key={item.name} 
+                className="bg-card border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-lg animate-fade-in"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-xl font-serif text-secondary">{item.name}</h3>
+                    <span className="text-lg font-bold text-primary">{item.priceText}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{item.description}</p>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">{item.weight}</span>
+                    <Button 
+                      size="sm"
                       className="bg-primary text-secondary hover:bg-primary/90"
                       onClick={() => handleOrderClick(item.name)}
                     >
@@ -424,7 +524,7 @@ const Index = () => {
             <div className="space-y-4">
               <h3 className="text-xl font-serif text-secondary">Ваш заказ:</h3>
               {Object.entries(cart).map(([itemName, quantity]) => {
-                const item = menuItems.find(i => i.name === itemName);
+                const item = allMenuItems.find(i => i.name === itemName);
                 return (
                   <div key={itemName} className="flex items-center justify-between p-4 bg-secondary/20 rounded-lg">
                     <div className="flex-1">
